@@ -11,13 +11,14 @@ import json
 app = Flask(__name__)
 
 # We need to configure an IP since docker run on its separate network, so we need the static IP from host machine.
-connect('selenium-reports', host='10.0.0.18', port=27017)
+# connect('selenium-reports', host='10.0.0.18', port=27017)
+connect('selenium-reports', host='10.0.1.113', port=27017)
 
 # App/Webservice config.
 api = Api(app)
 
 class Report(Document):
-    report_id = IntField(db_field='id', unique=True)
+    report_id = IntField(unique=True)
     title = StringField()
     date = DateTimeField(default=datetime.now)
     start_time = StringField()
@@ -38,11 +39,11 @@ class Report(Document):
 
 class ReportGeneratorHandler(Resource):
     def get(self, report_id):
-        report = Report.objects(id=report_id)
-        return dumps(report)
+        report = Report.objects(report_id=report_id)
+        return report.to_json()
     def put(self, report_id):
         report_data = json.loads(request.get_json())
-        report = Report(id=report_id, title=report_data['title'], start_time=report_data['start_time'],duration=float(report_data['duration']), status=report_data['status'])
+        report = Report(report_id=report_id, title=report_data['title'], start_time=report_data['start_time'],duration=float(report_data['duration']), status=report_data['status'])
         report.save()
         return jsonify(report_data)
 

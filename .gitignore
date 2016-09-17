@@ -1,5 +1,5 @@
 #Ignoring folders
-db_persistence/
+db-persistence/
 
 ### macOS ###
 *.DS_Store
