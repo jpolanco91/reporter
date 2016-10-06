@@ -53,33 +53,6 @@ class TestAggregatorHandler(Resource):
 api.add_resource(ReportGeneratorHandler, '/reporter/api/generate-report/<int:report_id>')
 # Endpoint to add tests results (e.g. articles, galleries ... )
 api.add_resource(TestAggregatorHandler, '/reporter/api/add-test/<int:report_id>')
-# report = {
-#     'id': 1,
-#     'title': 'Test report for Cosmopolitan SE',
-#     'date': '2016-08-29',
-#     'start_time':'20:41:47',
-#     'duration':'0:02:51',
-#     'status': 'Pass: 14, Failure: 2',
-#     'article_tests': [
-#         {'test_title':'ARTICLE - Checking if share buttons inside Article lead image works fine', 'status': 'Pass', 'error_msg':'', 'test_type':'article'},
-#         {'test_title':'ARTICLE - Checking if the article is showing up published date', 'status': 'Pass', 'error_msg':'', 'test_type':'article'},
-#         {'test_title':'ARTICLE - Checking if is showing up tags on top of an article', 'status':'Pass', 'error_msg':'', 'test_type':'article'},
-#         {'test_title':'ARTICLE - Checking if sticky social buttons works fine', 'status':'Fail', 'error_msg':'', 'test_type':'article'}
-#     ],
-#     'gallery_tests': [],
-#     'homepage_tests': [],
-#     'mediaos-article_tests':[],
-#     'mediaos-collection_tests':[],
-#     'mediaos-login_tests':[],
-#     'mediaos-search-content_tests':[],
-#     'mediaos-search-img_tests':[],
-#     'mediaos-section_tests':[],
-#     'mediaos-subsection_tests':[],
-#     'mediaos-sponsor_tests':[],
-#     'mediaos-upload-img_test':[]
-# }
-
-
 
 # This is to run via Docker container.
 if __name__ == '__main__':
