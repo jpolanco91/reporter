@@ -1,5 +1,7 @@
 #Ignoring folders
 db-persistence/
+bind/
+webmin/
 
 ### macOS ###
 *.DS_Store

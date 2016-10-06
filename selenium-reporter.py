@@ -6,15 +6,12 @@ from flask_restful import Resource, Api
 from mongoengine import *
 from bson.json_util import dumps
 import json
+import os
 
 # Creating our webservice (app)
 app = Flask(__name__)
-
-# We need to configure an IP since docker run on its separate network, so we need the static IP from host machine.
-# connect('selenium-reports', host='10.0.0.18', port=27017)
-connect('selenium-reports', host='10.0.1.113', port=27017)
-
-# App/Webservice config.
+service_hostname = os.environ.get('REPORTER_SERVICE_HOSTNAME')
+connect('selenium-reports', host=service_hostname, port=27017)
 api = Api(app)
 
 class Report(Document):
