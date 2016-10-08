@@ -14,7 +14,9 @@ service_hostname = os.environ.get('REPORTER_SERVICE_HOSTNAME')
 connect('selenium-reports', host=service_hostname, port=27017)
 api = Api(app)
 
+
 class Report(Document):
+
     report_id = IntField(unique=True)
     title = StringField()
     date = DateTimeField(default=datetime.now)
@@ -32,21 +34,28 @@ class Report(Document):
     mediaos_section_tests = ListField()
     mediaos_subsection_tests = ListField()
     mediaos_sponsor_tests = ListField()
-    mediaos_upload_img_test = ListField()
+    mediaos_upload_img_tests = ListField()
 
 class ReportGeneratorHandler(Resource):
+
     def get(self, report_id):
         report = Report.objects(report_id=report_id)
         return report.to_json()
+
     def put(self, report_id):
         report_data = json.loads(request.get_json())
-        report = Report(report_id=report_id, title=report_data['title'], start_time=report_data['start_time'],duration=float(report_data['duration']), status=report_data['status'])
+        report = Report(report_id=report_id, title=report_data['title'], start_time=report_data['start_time'],
+        	           duration=float(report_data['duration']), status=report_data['status'])
         report.save()
         return jsonify(report_data)
 
 class TestAggregatorHandler(Resource):
+
     def put(self, report_id):
-        pass
+        test_data = json.loads(request.get_json())
+        report_field_type = test_data['test_type'] + "_tests"
+        report = Report.objects(report_id=report_id)
+        report.report_field_type.append(json.dumps(test_data['test_data']))
 
 
 # Endpoint to generate/showing report.
