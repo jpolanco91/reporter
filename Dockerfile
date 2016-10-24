@@ -1,12 +1,15 @@
-FROM ubuntu
+FROM ubuntu:latest
 MAINTAINER Juan Polanco
-RUN apt-get update
-RUN apt-get install -y python-pip
-RUN pip install Flask
-RUN pip install mongoengine
-RUN pip install flask-restful
+
+# Updating repos and installing software-properties-common to ensure
+# we have the latest PPA repos.
+RUN apt-get update && apt-get -y install software-properties-common
+RUN apt-get -y install python3-pip
+RUN pip3 install Flask
+RUN pip3 install mongoengine
+RUN pip3 install flask-restful
 COPY selenium-reporter.py /home
 WORKDIR /home
-ENTRYPOINT ["python" ]
+ENTRYPOINT ["python3" ]
 CMD ["selenium-reporter.py"]
 EXPOSE 5000
