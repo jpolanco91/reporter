@@ -15,7 +15,7 @@ connect('selenium-reports', host=service_hostname, port=27017)
 api = Api(app)
 
 
-class Report(Document):
+class Report(DynamicDocument):
 
     report_id = IntField(unique=True)
     title = StringField()
@@ -23,18 +23,6 @@ class Report(Document):
     start_time = StringField()
     duration = FloatField()
     status = StringField()
-    article_tests = ListField()
-    gallery_tests = ListField()
-    homepage_tests = ListField()
-    mediaos_article_tests = ListField()
-    mediaos_collection_tests = ListField()
-    mediaos_article_testslogin_tests = ListField()
-    mediaos_search_content_tests = ListField()
-    mediaos_search_img_tests = ListField()
-    mediaos_section_tests = ListField()
-    mediaos_subsection_tests = ListField()
-    mediaos_sponsor_tests = ListField()
-    mediaos_upload_img_tests = ListField()
 
 class ReportGeneratorHandler(Resource):
 
@@ -43,25 +31,31 @@ class ReportGeneratorHandler(Resource):
         return report.to_json()
 
     def put(self, report_id):
-        report_data = json.loads(request.get_json())
+        #json_str = str(request.get_json(), 'utf-8')
+        report_data = request.get_json()
+
+        #Get all keys from the report dictionary.
+        report_keys = report_data.keys()
+
+        #Creating report object with initial data.
         report = Report(report_id=report_id, title=report_data['title'], start_time=report_data['start_time'],
         	           duration=float(report_data['duration']), status=report_data['status'])
+
+        #Creating new list for tests type keys.
+        tests_keys = []
+
+        #Add keys for every group of tests that were performed.
+        for key in report_keys:
+            if key.find("_tests"):
+                report.__setattr__(key, report_data[key])
+
+        # Saving report to db.
         report.save()
         return jsonify(report_data)
-
-class TestAggregatorHandler(Resource):
-
-    def put(self, report_id):
-        test_data = json.loads(request.get_json())
-        report_field_type = test_data['test_type'] + "_tests"
-        report = Report.objects(report_id=report_id)
-        report.report_field_type.append(json.dumps(test_data['test_data']))
 
 
 # Endpoint to generate/showing report.
 api.add_resource(ReportGeneratorHandler, '/reporter/api/generate-report/<int:report_id>')
-# Endpoint to add tests results (e.g. articles, galleries ... )
-api.add_resource(TestAggregatorHandler, '/reporter/api/add-test/<int:report_id>')
 
 # This is to run via Docker container.
 if __name__ == '__main__':
