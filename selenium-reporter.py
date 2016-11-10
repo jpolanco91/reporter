@@ -1,9 +1,9 @@
 # Using bitnami/mongodb:latest image for MongoDB https://hub.docker.com/r/bitnami/mongodb/
 
-from datetime import datetime
 from flask import Flask, jsonify, request
 from flask_restful import Resource, Api
-from mongoengine import *
+from models.report_model import Report
+from mongoengine import connect
 from bson.json_util import dumps
 import json
 import os
@@ -14,16 +14,6 @@ service_hostname = os.environ.get('REPORTER_SERVICE_HOSTNAME')
 connect('selenium-reports', host=service_hostname, port=27017)
 api = Api(app)
 
-
-class Report(DynamicDocument):
-
-    report_id = IntField(unique=True)
-    title = StringField()
-    date = DateTimeField(default=datetime.now)
-    start_time = StringField()
-    duration = FloatField()
-    status = StringField()
-
 class ReportGeneratorHandler(Resource):
 
     def get(self, report_id):
@@ -31,7 +21,6 @@ class ReportGeneratorHandler(Resource):
         return report.to_json()
 
     def put(self, report_id):
-        #json_str = str(request.get_json(), 'utf-8')
         report_data = request.get_json()
 
         #Get all keys from the report dictionary.

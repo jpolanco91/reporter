@@ -8,6 +8,8 @@ RUN apt-get -y install python3-pip
 RUN pip3 install Flask
 RUN pip3 install mongoengine
 RUN pip3 install flask-restful
+CMD ["mkdir","/home/models"]
+COPY models /home/models
 COPY selenium-reporter.py /home
 WORKDIR /home
 ENTRYPOINT ["python3" ]
