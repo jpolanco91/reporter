@@ -1,4 +1,3 @@
-# Using bitnami/mongodb:latest image for MongoDB https://hub.docker.com/r/bitnami/mongodb/
 
 from flask import Flask, jsonify, request
 from flask_restful import Resource, Api
